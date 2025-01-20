@@ -1,13 +1,31 @@
 const gameboard = (function() {
-    const board = [[null, null, null], [null, null, null], [null, null, null]]
+    let board = [[null, null, null], [null, null, null], [null, null, null]]
 
     function setBoard(marker, x, y) {
         board[y][x] = marker
+    }
 
+    function getBoard() {
         return board
     }
 
-    function checkWin() {
+    function resetBoard() {
+        board = [[null, null, null], [null, null, null], [null, null, null]]
+    }
+
+    return {setBoard, getBoard, resetBoard}
+})();
+
+function makePlayer(marker) {
+    function play(x, y) {
+        return gameboard.setBoard(marker, x, y)
+    }
+
+    return {play}
+}
+
+const game = (function() {
+    function checkWin(board) {
         for (let i = 0; i < 3; i++) {
             if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0]) { // horizontal
                 return board[i][0]
@@ -34,8 +52,43 @@ const gameboard = (function() {
         return 'draw'
     }
 
-    return {setBoard, checkWin}
-})();
+    function start() {
+        gameboard.resetBoard()
+        displayController.update(gameboard.getBoard())
+
+        const p1 = makePlayer('X')
+        const p2 = makePlayer('O')
+
+        let turn = p1
+
+        document.querySelector('.board').addEventListener('click', (event) => {
+            if (event.target.className !== 'cell') {
+                return
+            }
+            const y = event.target.parentElement.getAttribute('data')
+            const x = event.target.getAttribute('data')
+            
+            if (gameboard.getBoard()[y][x] !== null) {
+                return
+            }
+
+            turn.play(x, y)
+            displayController.update(gameboard.getBoard())
+
+            turn === p1 ? turn = p2 : turn = p1
+
+            const won = game.checkWin(gameboard.getBoard())
+
+            if (won === 'draw') {
+                console.log('draw')
+            } else if (won) {
+                console.log(`${won} wins`)
+            }
+        })
+    }
+
+    return {checkWin, start}
+})()
 
 const displayController = (function() {
     const boardContainer = document.querySelector('.board')
@@ -53,12 +106,9 @@ const displayController = (function() {
                 const newCell = document.createElement('div')
                 newCell.classList.add('cell')
                 newCell.setAttribute('data', x)
-                if (board[y][x]) {
-                    newCell.textContent = board[y][x]
-                } else {
-                    newCell.textContent = ' '
-                }
+
                 newCell.textContent = board[y][x]
+
                 newLayer.appendChild(newCell)
             }
             
@@ -68,12 +118,4 @@ const displayController = (function() {
     return {update}
 })()
 
-function makePlayer(marker) {
-    function play(x, y) {
-        return gameboard.setBoard(marker, x, y)
-    }
-
-    return {play}
-}
-
-displayController.update(makePlayer('O').play(1,0))
+game.start()
