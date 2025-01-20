@@ -52,42 +52,13 @@ const game = (function() {
         return 'draw'
     }
 
-    function start() {
+    function reset() {
         gameboard.resetBoard()
         displayController.update(gameboard.getBoard())
-
-        const p1 = makePlayer('X')
-        const p2 = makePlayer('O')
-
-        let turn = p1
-
-        document.querySelector('.board').addEventListener('click', (event) => {
-            if (event.target.className !== 'cell') {
-                return
-            }
-            const y = event.target.parentElement.getAttribute('data')
-            const x = event.target.getAttribute('data')
-            
-            if (gameboard.getBoard()[y][x] !== null) {
-                return
-            }
-
-            turn.play(x, y)
-            displayController.update(gameboard.getBoard())
-
-            turn === p1 ? turn = p2 : turn = p1
-
-            const won = game.checkWin(gameboard.getBoard())
-
-            if (won === 'draw') {
-                console.log('draw')
-            } else if (won) {
-                console.log(`${won} wins`)
-            }
-        })
+        document.querySelector('.result').textContent = ''
     }
 
-    return {checkWin, start}
+    return {checkWin, reset}
 })()
 
 const displayController = (function() {
@@ -118,4 +89,49 @@ const displayController = (function() {
     return {update}
 })()
 
-game.start()
+const p1 = makePlayer('X')
+const p2 = makePlayer('O')
+
+let turn = p1
+
+document.querySelector('.board').addEventListener('click', (event) => {
+    if (event.target.className !== 'cell') {
+        return
+    }
+
+    const y = event.target.parentElement.getAttribute('data')
+    const x = event.target.getAttribute('data')
+    
+    if (gameboard.getBoard()[y][x] !== null) {
+        return
+    }
+
+    turn.play(x, y)
+    displayController.update(gameboard.getBoard())
+
+    const won = game.checkWin(gameboard.getBoard())
+
+    if (won === 'draw') {
+        document.querySelector('.result').textContent = 'Draw'
+    } else if (won) {
+        const p1Name = document.querySelector('.player-one').value
+        const p2Name = document.querySelector('.player-two').value
+
+        if (turn === p1 && p1Name !== '') {
+            document.querySelector('.result').textContent = `${p1Name} wins`
+        } else if (turn === p2 && p2Name !== '') {
+            document.querySelector('.result').textContent = `${p2Name} wins`
+        } else {
+            document.querySelector('.result').textContent = `${won} wins`
+        }
+    }
+
+    turn === p1 ? turn = p2 : turn = p1
+})
+
+document.querySelector('button').addEventListener('click', (event) => {
+    game.reset()
+    turn = p1
+
+    event.target.textContent = 'Restart'
+})
