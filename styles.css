@@ -4,19 +4,24 @@ body {
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
+    background-color: #121212;
+    color: white;
+    height: 98vh;
 }
 
 .board {
     height: 500px;
     width: 500px;
-    border: 2px solid black;
+    border: 2px solid white;
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .layer {
     flex: 1;
     display: flex;
+    gap: 16px;
 }
 
 .cell {
@@ -26,24 +31,56 @@ body {
     font-size: 128px;
     text-align: center;
     user-select: none;
-    cursor: pointer
+    cursor: pointer;
+    background-color: darkgray;
+    border-radius: 20px;
+    color: white;
+}
+
+.cell:hover {
+    background-color: gray;
 }
 
 .result {
-    margin: 25px;
+    margin: 50px;
     font-weight: bold;
-    font-size: 36px;
+    font-size: 48px;
     height: 50px;
 }
 
 button {
-    background-color: white;
-    font-size: 28px;
-    width: 120px;
+    background-color: green;
+    color: white;
+    font-size: 48px;
+    border-radius: 25px;
+    width: 220px;
+    margin: 50px;
+    border: none;
     cursor: pointer;
-    margin-bottom: 30px;
 }
 
 button:hover {
-    background-color: whitesmoke;
+    background-color: darkgreen;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    margin: 50px;
+    font-size: 62px;
+}
+
+label {
+    font-size: 24px;
+}
+
+input {
+    background-color: #121212;
+    border: 2px solid white;
+    margin-bottom: 16px;
+    border-radius: 15px;
+    color: white;
 }

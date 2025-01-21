@@ -106,6 +106,8 @@ document.querySelector('.board').addEventListener('click', (event) => {
         return
     }
 
+    event.target.classList.remove('hover')
+
     turn.play(x, y)
     displayController.update(gameboard.getBoard())
 
@@ -130,6 +132,7 @@ document.querySelector('.board').addEventListener('click', (event) => {
 })
 
 document.querySelector('button').addEventListener('click', (event) => {
+    document.querySelector('.board').style.border = 'none'
     game.reset()
     turn = p1
 
